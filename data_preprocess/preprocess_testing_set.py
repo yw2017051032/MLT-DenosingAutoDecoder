@@ -31,6 +31,16 @@ def to_int(days):
     else:
         return int(days)
 
+def to_target(x):
+    if x < 0.5:
+        return 0
+    elif x >= 0.5 and x <= 0.9:
+        return 1
+    elif x > 0.9:
+        return 2
+    else:
+        return -1
+
 
 #将数据进行标准化处理
 def standardlization(series):
@@ -59,11 +69,12 @@ df1['Days_to_FFP_DATE']=df1['LOAD_TIME'].apply(lambda x:parse_strdate(x))-df1['F
 df1['Days_to_FFP_DATE']=df1['Days_to_FFP_DATE'].apply(lambda x:x.days) #获取间隔天数
 df1['Days_to_FIRST_FLIGHT_DATE']=df1['LOAD_TIME'].apply(lambda x:parse_strdate(x))-df1['FIRST_FLIGHT_DATE'].apply(lambda x:parse_strdate(x))
 df1['Days_to_FIRST_FLIGHT_DATE']=df1['Days_to_FIRST_FLIGHT_DATE'].apply(lambda x:x.days)
+df1['target']=df1['L1Y_Flight_Count']/df1['P1Y_Flight_Count'].apply(lambda x:to_target(x))
 temp1=df1.drop('MEMBER_NO',axis=1)
 temp1=temp1.drop('FFP_DATE',axis=1)
 temp1=temp1.drop('FIRST_FLIGHT_DATE',axis=1)
 temp1=temp1.drop('GENDER',axis=1)
-temp1=temp1.drop('FFP_TIER',axis=1)
+temp1=temp1.drop('target',axis=1)
 temp1=temp1.drop('LOAD_TIME',axis=1)
 temp1=temp1.drop('WORK_CITY',axis=1)
 temp1=temp1.drop('WORK_PROVINCE',axis=1)
@@ -84,7 +95,7 @@ temp1=pd.DataFrame(temp1)
 #将class标签进行onehot编码
 # one_hot=joblib.load('../model/OneHotEncoder.pkl')
 # df1['class']=one_hot.transform(np.array(df1['FFP_TIER']).reshape(-1,1))
-df1['class']=df1['FFP_TIER']
+df1['class']=df1['target']
 
 
 

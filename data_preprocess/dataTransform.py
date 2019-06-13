@@ -33,6 +33,18 @@ def to_int(days):
         return int(days)
 
 
+def to_target(x):
+    if x<0.5:
+        return 0
+    elif x>=0.5 and x<=0.9:
+        return 1
+    elif x>0.9:
+        return 2
+    else:
+        return -1
+
+
+
 
 
 
@@ -61,11 +73,12 @@ df1['Days_to_FFP_DATE']=df1['LOAD_TIME'].apply(lambda x:parse_strdate(x))-df1['F
 df1['Days_to_FFP_DATE']=df1['Days_to_FFP_DATE'].apply(lambda x:x.days) #获取间隔天数
 df1['Days_to_FIRST_FLIGHT_DATE']=df1['LOAD_TIME'].apply(lambda x:parse_strdate(x))-df1['FIRST_FLIGHT_DATE'].apply(lambda x:parse_strdate(x))
 df1['Days_to_FIRST_FLIGHT_DATE']=df1['Days_to_FIRST_FLIGHT_DATE'].apply(lambda x:x.days)
+df1['target']=df1['L1Y_Flight_Count']/df1['P1Y_Flight_Count'].apply(lambda x:to_target(x))
 temp1=df1.drop('MEMBER_NO',axis=1)
 temp1=temp1.drop('FFP_DATE',axis=1)
 temp1=temp1.drop('FIRST_FLIGHT_DATE',axis=1)
 temp1=temp1.drop('GENDER',axis=1)
-temp1=temp1.drop('FFP_TIER',axis=1)
+temp1=temp1.drop('target',axis=1)
 temp1=temp1.drop('LOAD_TIME',axis=1)
 temp1=temp1.drop('WORK_CITY',axis=1)
 temp1=temp1.drop('WORK_PROVINCE',axis=1)
@@ -86,7 +99,7 @@ temp1=pd.DataFrame(temp1)
 # one_hot = OneHotEncoder()
 # df1['class']=one_hot.fit_transform(np.array(df1['FFP_TIER']).reshape(-1,1))
 # joblib.dump(one_hot,'../model/OneHotEncoder.pkl')
-df1['class']=df1['FFP_TIER']
+df1['class']=df1['target']
 
 
 
@@ -112,7 +125,7 @@ df1['WORK_CITY']=min_max_scaler1.transform(df1['WORK_CITY'].values.reshape(-1,1)
 
 
 
-#将字符型类别变量数字化，并进行归一化。
+#将字符型类别变量工作省份数字化，并进行归一化。
 labelEncoder2=LabelEncoder()
 min_max_scaler2 =MinMaxScaler()
 temp=pd.concat([df1['WORK_PROVINCE'],df2['WORK_PROVINCE']],axis=0)
@@ -126,7 +139,7 @@ df1['WORK_PROVINCE']=min_max_scaler2.transform(df1['WORK_PROVINCE'].values.resha
 
 
 
-#将字符型类别变量数字化，并进行归一化。
+#将字符型类别变量工作国家数字化，并进行归一化。
 labelEncoder3=LabelEncoder()
 min_max_scaler3 =MinMaxScaler()
 temp=pd.concat([df1['WORK_COUNTRY'],df2['WORK_COUNTRY']],axis=0)

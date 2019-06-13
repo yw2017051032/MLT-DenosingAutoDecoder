@@ -33,7 +33,7 @@ sampleList=random.sample(range(0,58258),size)
 sampleList.sort()
 np.random.randint(0,44,size=1)
 for i in sampleList:
-    df3.iloc[i,np.random.randint(1,44,size=1)]=np.nan #df.loc()函数根据元素的选取条件来选取对应的数据集，df.iloc()函数，它是基于索引位来选取数据集，0:4就是选取 0，1，2，3这四行，需要注意的是这里是前闭后开集合
+    df3.iloc[i,np.random.randint(1,43,size=1)]=np.nan #df.loc()函数根据元素的选取条件来选取对应的数据集，df.iloc()函数，它是基于索引位来选取数据集，0:4就是选取 0，1，2，3这四行，需要注意的是这里是前闭后开集合
 
 df3.to_csv(path_or_buf='../data/air_data(training).csv',index=False,encoding='utf-8')#生产用于构建降噪自编码器的数据集
 
